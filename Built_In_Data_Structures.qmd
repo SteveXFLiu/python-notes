@@ -1,0 +1,415 @@
+---
+title: "**Built-In Data Structures of Python**"
+date: today
+author:
+  - name: steveleo
+
+format:
+  pdf:
+    pdf-engine: pdflatex
+    documentclass: article
+    papersize: a4
+    geometry:
+        - margin=1in
+    toc: false
+    number-sections: true
+    colorlinks: true
+
+    highlight-style: ayu
+    code-block-bg: true
+    code-block-border-left: true
+    
+    include-in-header: 
+      text: |
+        \usepackage{mathpazo}
+        \usepackage{fvextra}
+        \DefineVerbatimEnvironment{Highlighting}{Verbatim}{
+          commandchars=\\\{\},
+          breaklines, breaknonspaceingroup, breakanywhere
+        }
+---
+
+# Tuple
+A tuple is a *fixed-length, immutable* sequence of Python objects which, once assigned, cannot be changed.
+
+## Creating Tuples
+The easiest way to create a tuple is with a comma-separated sequence of values wrapped in parentheses, while in many contexts the parentheses can be ommitted:
+```{python}
+tup1 = (1, 2, 3)
+tup2 = 1, 2, 3
+
+tup1 == tup2
+```
+
+Any sequence or iterator can be converted to a tuple:
+```{python}
+tup = tuple('string')
+
+tup
+```
+
+## Accessing Elements and Immutability of Tuples
+Elements can be accessed with square brackets as with most other sequence types:
+```{python}
+tup[0]
+```
+
+Here is an example of a tuple of tuples:
+```{python}
+tup_nested = (4, 5, 6), (7, 8)
+
+tup_nested[-1]
+```
+
+Once a tuple is created, it's not possible to modify the objects stored in it:
+```{python}
+#| error: true
+
+tup_mixed = tuple(['foo', [1, 2], True])
+
+tup_mixed[-1] = False
+```
+But if an object inside a tuple is mutable, we can modify it in place:
+```{python}
+tup_mixed[1].append(3)
+
+tup_mixed
+```
+
+## Concatenating Tuples
+Tuples can be concatenated with the `+` operator:
+```{python}
+(4, None, 'foo') + (6, 0) + ('bar',)
+```
+
+Multiplying a tuple by an integer has the effect of concatenating that many copies of the tuple:
+```{python}
+('foo', 'bar') * 3
+```
+
+## Unpacking Tuples
+If we assign to a tuple-like expression of variables, Python will attempt to *unpack* the values:
+```{python}
+tup = (1, 2, 3)
+a, b, c = tup
+
+b
+```
+It is also the case with nested tuples:
+```{python}
+tup = 4, 5, (6, 7)
+a, b, (c, d) = tup
+
+d
+```
+
+We can swap variable names *Pythonically* with this functionality:
+```{python}
+a, b = 1, 2
+b, a = a, b
+
+b
+```
+
+A common use of variable unpacking is iterating over sequences of tuples or lists:
+```{python}
+seq = [(1, 2, 3), (4, 5, 6), (7, 8, 9)]
+
+for a, b, c in seq:
+    print(f'a={a}, b={b}, c={c}')
+```
+
+To capture an arbitrarily long list of positional arguments, we can use `*rest`, or just `*_` for convenience (here the `rest` or `_` is something to be discarded):
+```{python}
+values = 1, 2, 3, 4, 5
+a, b, *rest = values
+
+rest
+```
+
+## Tuple Methods
+The `count` method returns the number of occurrences of a value:
+```{python}
+tup = (1, 2, 2, 2, 3, 4, 2)
+
+tup.count(2)
+```
+
+The `index` method returns the first occurrence of the given element from the tuple:
+```{python}
+tup.index(2)
+```
+
+# List
+In contrast with tuples, lists are *variable length* and their contents can be modified in place, or lists are *mutable*.
+
+## Creating Lists
+We can create lists using square brackets or using the `list` type function:
+```{python}
+a_tuple = (0, "foo", None, True)
+a_list = list(a_tuple)
+
+b_list = [0, "foo", None, True]
+
+a_list == b_list
+```
+
+A frequently used function of `list` is as a way to materialize an iterator or generator expression:
+```{python}
+gen = range(10)
+
+list(gen)
+```
+
+## Accessing, Adding, and Removing Elements
+Elements of a list can also be accessed with square brackets:
+```{python}
+a_list[1]
+```
+
+Elements can be appended to the end of the list with the `append` method:
+```{python}
+a_list.append("bar")
+
+a_list
+```
+
+Using `insert` we can insert an element to a specific location in the list (the insertion index must be between 0 and the length of the list, inclusive):
+```{python}
+a_list.insert(2, "bar")
+
+a_list
+```
+
+Elements can be removed by value with the method `remove`, which locates the first such value and removes it from the list:
+```{python}
+a_list.remove("bar")
+
+a_list
+```
+
+Another method removing elements is `pop`, which removes and returns an element at a particular index:
+```{python}
+a_list.insert(2, "bar")
+
+a_list.pop(2)
+```
+```{python}
+a_list
+```
+
+To check if a list contains a value, we can use the `in` keyword:
+```{python}
+0 in a_list
+```
+```{python}
+True not in a_list
+```
+
+## Concatenating and Combining Lists
+Adding two lists together with `+` concatenates them:
+```{python}
+[4, None, "foo"] + [7, 8, (2, 3)]
+```
+
+We can append multiple elements to an already defined list with the `extend` method:
+```{python}
+x = [ 4, None, "foo"]
+x.extend([7, 8, (2, 3)])
+
+x
+```
+The `extend` method combines two lists to one, while the `append` method adds an element to the end of the list:
+```{python}
+y = [4, None, "foo"]
+y.append([7, 8, (2, 3)])
+
+y
+```
+
+Note that list concatenation by addition is a comparatively expensive operation since a new list must be created and the objects copied over. Using `extend` to append elements to an existing list, especially if we are building a large list, is usually preferable. For example:
+```{python}
+#| eval: false
+
+symbols = []
+
+for symbol in stock_list:
+    symbols.extend(symbol)
+```
+
+## Sorting
+We can sort a list in place (without creating a new object) by calling its `sort` function:
+```{python}
+#| eval: false
+
+list.sort(reverse = False|True, key)
+```
+For example:
+```{python}
+a = ["foo", "bar", "he", "names"]
+a.sort(reverse = True, key=len)
+
+a
+```
+
+## Slicing
+A slice notation, which in its basic form `[start:stop]`, can be used to select sections of most sequence types. While the element at the `start` index is included, the `stop` index is *not included*, so that the number of elements in the result is `stop - start`:
+```{python}
+seq = list(range(10))
+
+seq[3:7]    # Index 3 to 6 (7 not included)
+```
+Either the `start` or `stop` can be omitted, in which case they default to the start and the end of the sequence, respectively:
+```{python}
+seq[:5]     # Index 0 to 4 (5 not included)
+```
+```{python}
+seq[6:]     # Index 6 to the end
+```
+Negative indices slice the sequence relative to the end:
+```{python}
+seq[-6:-2]  # Index 10-6=4 to 7 (10-2=8, not included)
+```
+
+@fig-slicing gives a helpful illustration of the above slicings with positive and negative integers.
+
+```{python}
+#| echo: false
+#| fig-cap: "Illustration of Python Slicing Conventions"
+#| label: fig-slicing
+
+import matplotlib.pyplot as plt
+from matplotlib.patches import  Rectangle
+
+fig = plt.figure()
+
+# The first illustration seq[3:7]
+plt.subplot(411)
+
+ax = plt.gca()
+ax.set_xlim([-1, len(seq)])
+ax.set_ylim([0, 1])
+
+plt.text(-1, 0.5, "seq[3:7]", fontfamily="monospace", fontsize=10, verticalalignment="center", horizontalalignment="right")
+
+for i in seq:
+    if i in seq[3:7]:
+        rect = Rectangle((i, 0), width=1, height=1, facecolor="orange", edgecolor="black")
+    else:
+        rect = Rectangle((i, 0), width=1, height=1, facecolor="white", edgecolor="black")    
+    ax.add_patch(rect)
+
+    plt.text(i + 0.5, 0.5, i, fontfamily="times", fontsize=12, verticalalignment="center", horizontalalignment="center")
+
+    plt.text(i + 0.1, 0.1, -(10-i), color="green", fontfamily="times", fontstyle="italic", fontsize=8, verticalalignment="bottom", horizontalalignment="left")
+    
+    plt.text(i + 0.1, 0.9, i, color="blue", fontfamily="times", fontstyle="italic", fontsize=8, verticalalignment="top", horizontalalignment="left")
+
+plt.axis('equal')
+plt.axis('off')
+
+# The second illustration seq[:5]
+plt.subplot(412)
+
+ax = plt.gca()
+ax.set_xlim([-1, len(seq)])
+ax.set_ylim([0, 1])
+
+plt.text(-1, 0.5, "seq[:5]", fontfamily="monospace", fontsize=10, verticalalignment="center", horizontalalignment="right")
+
+for i in seq:
+    if i in seq[:5]:
+        rect = Rectangle((i, 0), width=1, height=1, facecolor="orange", edgecolor="black")
+    else:
+        rect = Rectangle((i, 0), width=1, height=1, facecolor="white", edgecolor="black")    
+    ax.add_patch(rect)
+
+    plt.text(i + 0.5, 0.5, i, fontfamily="times", fontsize=12, verticalalignment="center", horizontalalignment="center")
+
+    plt.text(i + 0.1, 0.1, -(10-i), color="green", fontfamily="times", fontstyle="italic", fontsize=8, verticalalignment="bottom", horizontalalignment="left")
+    
+    plt.text(i + 0.1, 0.9, i, color="blue", fontfamily="times", fontstyle="italic", fontsize=8, verticalalignment="top", horizontalalignment="left")
+
+plt.axis('equal')
+plt.axis('off')
+
+# The third illustration seq[6:]
+plt.subplot(413)
+
+ax = plt.gca()
+ax.set_xlim([-1, len(seq)])
+ax.set_ylim([0, 1])
+
+plt.text(-1, 0.5, "seq[6:]", fontfamily="monospace", fontsize=10, verticalalignment="center", horizontalalignment="right")
+
+for i in seq:
+    if i in seq[6:]:
+        rect = Rectangle((i, 0), width=1, height=1, facecolor="orange", edgecolor="black")
+    else:
+        rect = Rectangle((i, 0), width=1, height=1, facecolor="white", edgecolor="black")    
+    ax.add_patch(rect)
+
+    plt.text(i + 0.5, 0.5, i, fontfamily="times", fontsize=12, verticalalignment="center", horizontalalignment="center")
+
+    plt.text(i + 0.1, 0.1, -(10-i), color="green", fontfamily="times", fontstyle="italic", fontsize=8, verticalalignment="bottom", horizontalalignment="left")
+    
+    plt.text(i + 0.1, 0.9, i, color="blue", fontfamily="times", fontstyle="italic", fontsize=8, verticalalignment="top", horizontalalignment="left")
+
+plt.axis('equal')
+plt.axis('off')
+
+# The fourth illustration seq[-6:-2]
+plt.subplot(414)
+
+ax = plt.gca()
+ax.set_xlim([-1, len(seq)])
+ax.set_ylim([0, 1])
+
+plt.text(-1, 0.5, "seq[-6:-2]", fontfamily="monospace", fontsize=10, verticalalignment="center", horizontalalignment="right")
+
+for i in seq:
+    if i in seq[-6:-2]:
+        rect = Rectangle((i, 0), width=1, height=1, facecolor="orange", edgecolor="black")
+    else:
+        rect = Rectangle((i, 0), width=1, height=1, facecolor="white", edgecolor="black")    
+    ax.add_patch(rect)
+
+    plt.text(i + 0.5, 0.5, i, fontfamily="times", fontsize=12, verticalalignment="center", horizontalalignment="center")
+
+    plt.text(i + 0.1, 0.1, -(10-i), color="green", fontfamily="times", fontstyle="italic", fontsize=8, verticalalignment="bottom", horizontalalignment="left")
+    
+    plt.text(i + 0.1, 0.9, i, color="blue", fontfamily="times", fontstyle="italic", fontsize=8, verticalalignment="top", horizontalalignment="left")
+
+plt.axis('equal')
+plt.axis('off')
+
+plt.show()
+```
+
+A `step` can also be used after a second colon in the slicing:
+```{python}
+seq[::2]
+```
+If a negative integer is passed to `step`, it will have the useful effect
+of reversing the list:
+```{python}
+seq[::-1]   # A useful trick to reverse the entire list
+```
+```{python}
+seq[::-2]
+```
+
+# Dictionary
+A dictionary stores a collection of *key-value* pairs, where *key* and *value* are both Python objects. Each key is associated with a value so that a value can be conveniently retrieved, inserted, modified, or deleted given a particular key.
+
+In other programming languages, dictionaries are sometimes called *hash maps* or *assotiative arrays*.
+
+## Creating Dictionaries
+To create a dictionary, we can use curly braces `{}` and colons to separate keys and values:
+```{python}
+d = {"a": "some value", "b": [1, 2, 3, 4]}
+
+d
+```
+
+# Set
