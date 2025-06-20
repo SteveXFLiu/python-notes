@@ -3,3 +3,5 @@ pydata-book
 .python-version
 uv.lock
 .DS_Store
+*.pdf
+*.html

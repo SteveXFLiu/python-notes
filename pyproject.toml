@@ -4,4 +4,4 @@ version = "0.1.0"
 description = "Notes of Python programming"
 readme = "README.md"
 requires-python = ">=3.12"
-dependencies = ["numpy", "pandas", "plotnine", "notebook", "marimo"]
+dependencies = ["numpy", "pandas", "plotnine", "notebook"]
