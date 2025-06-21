@@ -259,7 +259,7 @@ seq = list(range(10))
 
 seq[3:7]    # Index 3 to 6 (7 not included)
 ```
-Either the `start` or `stop` can be omitted, in which case they default to the start and the end of the sequence, respectively:
+Either the `start` or `stop` can be omitted (evaluated as `None` actually), in which case they default to the start and the end of the sequence, respectively:
 ```{python}
 seq[:5]     # Index 0 to 4 (5 not included)
 ```
@@ -281,107 +281,41 @@ seq[-6:-2]  # Index 10-6=4 to 7 (10-2=8, not included)
 import matplotlib.pyplot as plt
 from matplotlib.patches import  Rectangle
 
+seq = list(range(10))
+
+params = {          # subplot_arrangement: (slicing_start, slicing_end)
+    411: (3, 7),
+    412: (None, 5),
+    413: (6, None),
+    414: (-6, -2)
+}
+
 fig = plt.figure()
 
-# The first illustration seq[3:7]
-plt.subplot(411)
-
-ax = plt.gca()
-ax.set_xlim([-1, len(seq)])
-ax.set_ylim([0, 1])
-
-plt.text(-1, 0.5, "seq[3:7]", fontfamily="monospace", fontsize=10, verticalalignment="center", horizontalalignment="right")
-
-for i in seq:
-    if i in seq[3:7]:
-        rect = Rectangle((i, 0), width=1, height=1, facecolor="orange", edgecolor="black")
-    else:
-        rect = Rectangle((i, 0), width=1, height=1, facecolor="white", edgecolor="black")    
-    ax.add_patch(rect)
-
-    plt.text(i + 0.5, 0.5, i, fontfamily="times", fontsize=12, verticalalignment="center", horizontalalignment="center")
-
-    plt.text(i + 0.1, 0.1, -(10-i), color="green", fontfamily="times", fontstyle="italic", fontsize=8, verticalalignment="bottom", horizontalalignment="left")
+for position, slicing in params.items():
+    plt.subplot(position)
     
-    plt.text(i + 0.1, 0.9, i, color="blue", fontfamily="times", fontstyle="italic", fontsize=8, verticalalignment="top", horizontalalignment="left")
-
-plt.axis('equal')
-plt.axis('off')
-
-# The second illustration seq[:5]
-plt.subplot(412)
-
-ax = plt.gca()
-ax.set_xlim([-1, len(seq)])
-ax.set_ylim([0, 1])
-
-plt.text(-1, 0.5, "seq[:5]", fontfamily="monospace", fontsize=10, verticalalignment="center", horizontalalignment="right")
-
-for i in seq:
-    if i in seq[:5]:
-        rect = Rectangle((i, 0), width=1, height=1, facecolor="orange", edgecolor="black")
-    else:
-        rect = Rectangle((i, 0), width=1, height=1, facecolor="white", edgecolor="black")    
-    ax.add_patch(rect)
-
-    plt.text(i + 0.5, 0.5, i, fontfamily="times", fontsize=12, verticalalignment="center", horizontalalignment="center")
-
-    plt.text(i + 0.1, 0.1, -(10-i), color="green", fontfamily="times", fontstyle="italic", fontsize=8, verticalalignment="bottom", horizontalalignment="left")
+    ax = plt.gca()
+    ax.set_xlim([-1, len(seq)])
+    ax.set_ylim([0, 1])
     
-    plt.text(i + 0.1, 0.9, i, color="blue", fontfamily="times", fontstyle="italic", fontsize=8, verticalalignment="top", horizontalalignment="left")
-
-plt.axis('equal')
-plt.axis('off')
-
-# The third illustration seq[6:]
-plt.subplot(413)
-
-ax = plt.gca()
-ax.set_xlim([-1, len(seq)])
-ax.set_ylim([0, 1])
-
-plt.text(-1, 0.5, "seq[6:]", fontfamily="monospace", fontsize=10, verticalalignment="center", horizontalalignment="right")
-
-for i in seq:
-    if i in seq[6:]:
-        rect = Rectangle((i, 0), width=1, height=1, facecolor="orange", edgecolor="black")
-    else:
-        rect = Rectangle((i, 0), width=1, height=1, facecolor="white", edgecolor="black")    
-    ax.add_patch(rect)
-
-    plt.text(i + 0.5, 0.5, i, fontfamily="times", fontsize=12, verticalalignment="center", horizontalalignment="center")
-
-    plt.text(i + 0.1, 0.1, -(10-i), color="green", fontfamily="times", fontstyle="italic", fontsize=8, verticalalignment="bottom", horizontalalignment="left")
+    plt.text(-1, 0.5, f'seq[{'' if slicing[0]== None else slicing[0]}:{'' if slicing[1]==None else slicing[1]}]', fontfamily="monospace", fontsize=10, verticalalignment="center", horizontalalignment="right")
     
-    plt.text(i + 0.1, 0.9, i, color="blue", fontfamily="times", fontstyle="italic", fontsize=8, verticalalignment="top", horizontalalignment="left")
-
-plt.axis('equal')
-plt.axis('off')
-
-# The fourth illustration seq[-6:-2]
-plt.subplot(414)
-
-ax = plt.gca()
-ax.set_xlim([-1, len(seq)])
-ax.set_ylim([0, 1])
-
-plt.text(-1, 0.5, "seq[-6:-2]", fontfamily="monospace", fontsize=10, verticalalignment="center", horizontalalignment="right")
-
-for i in seq:
-    if i in seq[-6:-2]:
-        rect = Rectangle((i, 0), width=1, height=1, facecolor="orange", edgecolor="black")
-    else:
-        rect = Rectangle((i, 0), width=1, height=1, facecolor="white", edgecolor="black")    
-    ax.add_patch(rect)
-
-    plt.text(i + 0.5, 0.5, i, fontfamily="times", fontsize=12, verticalalignment="center", horizontalalignment="center")
-
-    plt.text(i + 0.1, 0.1, -(10-i), color="green", fontfamily="times", fontstyle="italic", fontsize=8, verticalalignment="bottom", horizontalalignment="left")
+    for i in seq:
+        if i in seq[slicing[0]:slicing[1]]:
+            rect = Rectangle((i, 0), width=1, height=1, facecolor="orange", edgecolor="black")
+        else:
+            rect = Rectangle((i, 0), width=1, height=1, facecolor="white", edgecolor="black")    
+        ax.add_patch(rect)
     
-    plt.text(i + 0.1, 0.9, i, color="blue", fontfamily="times", fontstyle="italic", fontsize=8, verticalalignment="top", horizontalalignment="left")
-
-plt.axis('equal')
-plt.axis('off')
+        plt.text(i + 0.5, 0.5, i, fontfamily="times", fontsize=12, verticalalignment="center", horizontalalignment="center")
+        
+        plt.text(i + 0.1, 0.1, -(10-i), color="green", fontfamily="times", fontstyle="italic", fontsize=8, verticalalignment="bottom", horizontalalignment="left")
+    
+        plt.text(i + 0.1, 0.9, i, color="blue", fontfamily="times", fontstyle="italic", fontsize=8, verticalalignment="top", horizontalalignment="left")
+        
+    plt.axis('equal')
+    plt.axis('off')
 
 plt.show()
 ```
@@ -412,4 +346,249 @@ d = {"a": "some value", "b": [1, 2, 3, 4]}
 d
 ```
 
+It's common to occasionally end up with two sequences that we want to pair up element-wise into a dictionary, in which case the `zip` function is especially useful:
+```{python}
+#| eval: false
+
+dict(zip(key_list, value_list))
+```
+For example:
+```{python}
+keys = ["a", "b", "c"]
+values = [1, 2, 3]
+
+d = dict(zip(keys, values))
+
+d
+```
+
+## Valid Dictionary Key Types
+WHile the values of a dictionary can be any Python object, the keys generally have to be *immutable* objects such as scalar types (int, float, string) or tuples (all the objects in the tuple need to be immutable, too). Or technically, the keys should be *hashable*.
+
+We can check whether an object is hashable with the `hash` function:
+```{python}
+hash("string")
+```
+```{python}
+hash((1, 2, (3, 4)))
+```
+```{python}
+#| error: true
+hash((1, 2, [3, 4]))    # Unhashable because the tuple contains a mutable list
+```
+
+To use a list as a key, one option is to convert it to a tuple:
+```{python}
+d_eg = {tuple([1, 2, 3]): 0}
+
+d_eg
+```
+
+## Accessing, Adding, and Removing Elements
+The values in a dictionary can be accessed with the syntax `dictName[key]`:
+```{python}
+d["b"]
+```
+
+We can check whether a key is contained in a dictionary using `in`:
+```{python}
+"x" not in d
+```
+
+The `keys` and `values` methods return the keys and values as `dict_keys` and `dict_values` objects, respectively:
+```{python}
+d.keys()
+```
+```{python}
+list(d.values())
+```
+And the `items` method returns both the keys and the values as a `dict_items` object, which contains pair-wise tuples of `(key, value)`:
+```{python}
+d.items()
+```
+
+A common use of the `items` method is iterating over a dictionary:
+```{python}
+#| eval: false
+
+for key, value in dictName.items():
+    ...
+```
+For example:
+```{python}
+for letter, num in d.items():
+    print(f'{letter} = {num}')
+```
+
+Values in a dictionary can be modified with the syntax `dictName[key] = new_value`:
+```{python}
+d["a"] = 0
+
+d
+```
+or with the `update` method:
+```{python}
+d.update({"b": 1, "c": 2})
+
+d
+```
+
+If the keys in above syntaxes do not exist in the dictionary, new key-value pairs will be added at the end of the dictionary (dictionaries do not have the `append` method):
+```{python}
+d["x"] = 5
+
+d
+```
+```{python}
+d.update({"y": 6})
+
+d
+```
+
+To remove a key-value pair, we can use the `del` keyword:
+```{python}
+del d["y"]
+
+d
+```
+Or we can use the `pop` method, which returns the value and deletes the key at the same time:
+```{python}
+d.pop("x")
+```
+```{python}
+d
+```
+
+## Default Values
+Suppose we already have a dictionary `d_old`, and need to creat a new dictionary `d_new` with the following logic:
+```{python}
+#| eval: false
+if key_new in d_old:
+    value_new = d_old[key_new]
+else:
+    value_new = default_value
+```
+We can use the `get` method:
+```{python}
+d_old = {"x": 1, "y": 2}
+d_new = {}
+keys_new = ("x", "y", "a", "b")
+default_value = 0
+
+for key in keys_new:
+    d_new[key] = d_old.get(key, default_value)
+
+d_new
+```
+
+Another useful method is `setdefault`. It returns the value of the item with the specified key. If the key does not exist, it will insert the key, with the specified value.
+
+Suppose we want to categorize a list of words by their first letters:
+```{python}
+words = ["apple", "bat", "bar", "atom", "book", "cat"]
+by_letter = {}
+
+for word in words:
+    letter = word[0]
+    by_letter.setdefault(letter, []).append(word)
+
+by_letter
+```
+
 # Set
+A set is an *unordered* collection of *unique* elements.
+
+## Creating Sets
+A set can be created via the a set literal with curly braces:
+```{python}
+{1, 1, 2, 3, 3, 3}
+```
+or via the `set` function:
+```{python}
+set([1, 1, 2, 3, 3, 3])
+```
+
+We can also create a new set by copying an existed one using the method `copy`:
+```{python}
+s1 = {"a", "b", "c"}
+s2 = s1.copy()
+
+s2
+```
+
+## Adding and Removing Elements
+To add an element to a set, use the `add` method:
+```{python}
+s = {1, 2, 3}
+s.add(0)
+
+s
+```
+
+To remove a specified element form a set, we can use the `remove` method:
+```{python}
+s.remove(3)
+
+s
+```
+
+Another method `pop` removes a *random* element and returns it:
+```{python}
+s.pop()
+```
+
+The `clear` method resets the set to an empty state, discarding all of its elements:
+```{python}
+s.clear()
+
+s
+```
+
+## Set Operations
+Sets support mathematical binary set operations. @tbl-set_operations lists these operations.
+
+```{=latex}
+\renewcommand{\arraystretch}{1.2}
+\begin{table}[h!]
+\centering
+\caption{Binary Set Operations}{#tbl-set_operations}
+\begin{tabular}{lll}
+\hline
+Mathematical Expression & Python Function & Alternative Python Syntax \\
+\hline
+$A \cup B$ & \texttt{A.union(B)} & \texttt{A | B} \\
+$A \cap B$ & \texttt{A.intersection(B)} & \texttt{A \& B} \\
+\\
+$A - B$ & \texttt{A.difference(B)} & \texttt{A - B} \\
+$A \triangle B$ & \texttt{A.symmetric\_difference(B)} & \texttt{A \^{} B} \\
+\\
+$A \subseteq B$ & \texttt{A.issubset(B)} & \texttt{A <= B} \\
+$A \supseteq B$ & \texttt{A.issuperset(B)} & \texttt{A >= B} \\
+$A \cap B = \emptyset$ & \texttt{A.isdisjoint(B)} & N/A \\
+\hline
+\end{tabular}
+\end{table}
+```
+
+When using the binary set operators, both objects must be sets. If we pass an input that is not a set, Python will convert it to a set before executing the operation.
+
+For binary operations union, intersection, difference, and symmetric difference on very large sets, it is usually more efficient to replace the contents of a set with the result than to generate a new set. This can be fulfilled with the in-place counterparts of these operators. See @tbl-set_operations_in_place.
+
+```{=latex}
+\renewcommand{\arraystretch}{1.2}
+\begin{table}[h!]
+\centering
+\caption{In-Place Binary Set Operations}{#tbl-set_operations_in_place}
+\begin{tabular}{lll}
+\hline
+Mathematical Expression & Python Function & Alternative Python Syntax \\
+\hline
+$A \leftarrow \left(A \cup B\right)$ & \texttt{A.update(B)} & \texttt{A |= B} \\
+$A \leftarrow \left(A \cap B\right)$ & \texttt{A.intersection\_update(B)} & \texttt{A \&= B} \\
+\\
+$A \leftarrow \left(A - B\right)$ & \texttt{A.difference\_update(B)} & \texttt{A -= B} \\
+$A \leftarrow \left(A \triangle B\right)$ & \texttt{A.symmetric\_difference\_update(B)} & \texttt{A \^{} = B} \\
+\hline
+\end{tabular}
+\end{table}
+```
