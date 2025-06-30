@@ -6,7 +6,7 @@ author:
 
 format:
   pdf:
-    pdf-engine: pdflatex
+    pdf-engine: xelatex
     documentclass: article
     papersize: a4
     geometry:
@@ -22,7 +22,14 @@ format:
     include-in-header: 
       text: |
         \usepackage{mathpazo}
+        \usepackage{fontspec}
+        \usepackage{xunicode}
+        \usepackage{xltxtra}
         \usepackage{fvextra}
+
+        \setmainfont{Miller Text}
+        \setmonofont{Hack Nerd Font Mono}
+
         \DefineVerbatimEnvironment{Highlighting}{Verbatim}{
           commandchars=\\\{\},
           breaklines, breaknonspaceingroup, breakanywhere
